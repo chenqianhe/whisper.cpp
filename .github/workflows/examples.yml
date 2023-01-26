@@ -10,7 +10,7 @@ on:
       - whisper.h
 
 jobs:
-  addon.node-ubuntu-latest:
+  addon_node-ubuntu-latest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,18 +27,17 @@ jobs:
           sudo apt-get install libsdl2-dev
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-        run: |
-          cd examples/addon.node
-          npm install
+
+      - name: Install package.json dependencies
+        working-directory: ./examples/addon.node
+        run: npm install
 
       - name: Compile addon.node
-        run: |
-          cd ../../
-          npx compile -T whisper-addon
+        run: npx cmake-js compile -T whisper-addon
 
       - name: Download test model
         run: |
